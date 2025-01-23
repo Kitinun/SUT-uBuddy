@@ -6,6 +6,7 @@ function MainPage() {
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const itemsPerPage = 6;
 
   // ข้อมูลตัวอย่าง
@@ -208,23 +209,46 @@ function MainPage() {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
+  };
+
+  const handleClear = () => {
+    setSearchQuery("");
+    setFilteredEmployees([]);
+    setHasSearched(false);
+    setCurrentPage(1);
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault(); // ป้องกันการ submit form
+    setIsLoading(true);
     setCurrentPage(1);
 
-    if (!value.trim()) {
-      setFilteredEmployees([]);
-      setHasSearched(false);
-      return;
+    try {
+      // จำลองการเรียก API
+      // ในการใช้งานจริง ให้แทนที่ส่วนนี้ด้วยการเรียก API จริง
+      await new Promise((resolve) => setTimeout(resolve, 500)); // จำลอง network delay
+
+      if (!searchQuery.trim()) {
+        setFilteredEmployees([]);
+        setHasSearched(true);
+        return;
+      }
+
+      const searchValue = searchQuery.toLowerCase().trim();
+      const filtered = employees.filter(
+        (employee) =>
+          employee.id.startsWith(searchValue) ||
+          employee.name.toLowerCase().includes(searchValue)
+      );
+
+      setFilteredEmployees(filtered);
+      setHasSearched(true);
+    } catch (error) {
+      console.error("Search failed:", error);
+      // TODO: แสดง error message ให้ user
+    } finally {
+      setIsLoading(false);
     }
-
-    const searchValue = value.toLowerCase().trim();
-    const filtered = employees.filter(
-      (employee) =>
-        employee.id.startsWith(searchValue) ||
-        employee.name.toLowerCase().includes(searchValue)
-    );
-
-    setFilteredEmployees(filtered);
-    setHasSearched(true);
   };
 
   const paginatedEmployees = useMemo(() => {
@@ -238,19 +262,38 @@ function MainPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Input */}
-        <div className="max-w-3xl mx-auto mb-8">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="ค้นหาด้วยรหัสประจำตัวบุคลากร หรือ ชื่อ-นามสกุล"
-              value={searchQuery}
-              onChange={handleInputChange}
-              className="w-full pl-12 pr-4 py-3 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
-            />
+        {/* Search Form */}
+        <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-8">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="ค้นหาด้วยรหัสประจำตัวบุคลากร หรือ ชื่อ-นามสกุล"
+                value={searchQuery}
+                onChange={handleInputChange}
+                className="w-full pl-12 pr-4 py-3 bg-white rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="px-6 py-3 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "กำลังค้นหา..." : "ค้นหา"}
+              </button>
+              <button
+                type="button"
+                onClick={handleClear}
+                disabled={isLoading || (!searchQuery && !hasSearched)}
+                className="px-6 py-3 bg-gray-200 text-gray-600 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                ล้างการค้นหา
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
 
         {/* Search Results */}
         {hasSearched && (

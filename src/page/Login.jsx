@@ -1,22 +1,7 @@
 // Login.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// จำลองข้อมูลผู้ใช้
-const mockUserData = {
-  267013: {
-    name: "John Doe",
-    department: "IT",
-    role: "Developer",
-    email: "john.doe@sut.ac.th",
-  },
-  267014: {
-    name: "Jane Smith",
-    department: "HR",
-    role: "Manager",
-    email: "jane.smith@sut.ac.th",
-  },
-};
+import axios from "axios";
 
 // Custom Alert Component
 const Alert = ({ children, variant }) => {
@@ -33,36 +18,45 @@ function Login() {
   const [staffCode, setStaffCode] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // ฟังก์ชันสร้าง token แบบง่าย
-  const generateToken = (staffCode) => {
-    return `mock_token_${staffCode}_${Date.now()}`;
-  };
+  const token = "5uO8AvpX0AJeM9v5X5ciORN17CpZpEI1346x7Hbr3zi8VefN49";
 
-  const handleLogin = () => {
-    if (staffCode.length === 6 && /^\d+$/.test(staffCode)) {
-      const user = mockUserData[staffCode];
+  const handleLogin = async () => {
+    try {
+      if (staffCode.length === 6 && /^\d+$/.test(staffCode)) {
+        const response = await axios.get(
+          `http://192.168.90.63/uBuddyHrApi/API/Fn01_GetStaff?staffCode=${staffCode}&kToken=${token}`
+        );
 
-      if (user) {
-        const token = generateToken(staffCode);
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
+        if (response?.data?.status == true) {
+          setShowSuccess(true);
+          setShowError(false);
+          setErrorMessage("");
 
-        setShowSuccess(true);
-        setShowError(false);
+          // ไม่ต้องรอ timeout ก็ได้ถ้าไม่ต้องการให้เห็น success message
+          navigate("/mainpage");
 
-        // แก้ path ให้ตรงกับที่กำหนดใน App.jsx
-        setTimeout(() => {
-          navigate("/mainpage", { replace: true });
-        }, 1500);
+          // หรือถ้าต้องการให้เห็น success message สักพัก:
+          // setTimeout(() => {
+          //   navigate("/mainpage");
+          // }, 1500);
+        } else {
+          setShowError(true);
+          setShowSuccess(false);
+          setErrorMessage("ไม่พบข้อมูลผู้ใช้ กรุณาตรวจสอบรหัสพนักงานอีกครั้ง");
+        }
       } else {
         setShowError(true);
         setShowSuccess(false);
+        setErrorMessage("รหัสพนักงานต้องเป็นตัวเลข 6 หลักเท่านั้น");
       }
-    } else {
+    } catch (error) {
+      console.error("Login error:", error);
       setShowError(true);
-      setShowError(false);
+      setShowSuccess(false);
+      setErrorMessage("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง");
     }
   };
 
@@ -82,11 +76,7 @@ function Login() {
           {/* Logo */}
           <div className="flex justify-center mb-16">
             <div className="text-[#E86A33] text-2xl font-bold flex items-center">
-              <img
-                src="/images/SUT_logo.png"
-                alt="SUT Logo"
-                className="h-24" // ปรับขนาดตามต้องการ
-              />
+              <img src="/images/SUT_logo.png" alt="SUT Logo" className="h-24" />
             </div>
           </div>
 
@@ -109,7 +99,7 @@ function Login() {
               <Alert variant={showSuccess ? "success" : "error"}>
                 {showSuccess
                   ? "เข้าสู่ระบบสำเร็จ! กำลังพาคุณไปยังหน้าข้อมูลผู้ใช้..."
-                  : "รหัสพนักงานไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง"}
+                  : errorMessage}
               </Alert>
             )}
 

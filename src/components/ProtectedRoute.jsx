@@ -1,13 +1,7 @@
-import { Navigate } from "react-router-dom";
-
+// ProtectedRoute.jsx
 function ProtectedRoute({ children }) {
-  const isAuthenticated = () => {
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
-    return token && user;
-  };
-
-  return isAuthenticated() ? children : <Navigate to="/" replace />;
+  // เราสามารถลบ Authentication check ออกและ return children เลย
+  return children;
 }
 
 export default ProtectedRoute;
