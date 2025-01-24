@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./page/Login";
 import Mainpage from "./page/MainPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AuthLayout from "./components/AuthLayout";
+import ProtectedRoute from "./components/Layout/ProtectedRoute";
+import AuthLayout from "./components/Layout/AuthLayout";
 
 function App() {
   // ฟังก์ชันสำหรับเช็คว่ามี authentication หรือไม่
