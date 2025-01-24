@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Search } from "lucide-react";
 import EmployeeCard from "../components/EmployeeCard";
 import EmployeeForm from "../components/EmployeeForm";
+import InitialSearchState from "../components/InitialSearchState";
 
 function MainPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -91,6 +92,7 @@ function MainPage() {
         </div>
 
         {isLoading ? (
+          //หน้า loading
           <div className="flex flex-col items-center justify-center p-8 sm:p-12 bg-white rounded-xl shadow-sm">
             <div className="w-24 h-24 sm:w-32 sm:h-32 flex items-center justify-center mb-4">
               <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-orange-400"></div>
@@ -101,6 +103,7 @@ function MainPage() {
             <p className="text-gray-500 text-center">กรุณารอสักครู่...</p>
           </div>
         ) : selectedEmployee === null && hasSearched ? (
+          //ไม่พบข้อมูล
           <div className="flex flex-col items-center justify-center p-8 sm:p-12 bg-white rounded-xl shadow-sm">
             <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gray-100 rounded-full flex items-center justify-center mb-4">
               <Search className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" />
@@ -113,11 +116,14 @@ function MainPage() {
             </p>
           </div>
         ) : selectedEmployee ? (
+          //พบข้อมูล
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <EmployeeCard employee={selectedEmployee} />
             <EmployeeForm />
           </div>
-        ) : null}
+        ) : (
+          <InitialSearchState />
+        )}
       </div>
     </div>
   );
