@@ -80,7 +80,7 @@ function Login() {
           <div className="flex justify-center mb-8 lg:mb-16">
             <div className="text-[#E86A33] text-xl lg:text-2xl font-bold flex items-center">
               <img
-                src="/src/assets/images/SUT_logo.png"
+                src={`${import.meta.env.BASE_URL}images/SUT_logo.jpg`}
                 alt="SUT Logo"
                 className="h-16 md:h-20 lg:h-24"
               />
