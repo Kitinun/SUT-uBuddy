@@ -6,7 +6,7 @@ function EmployeeCard({ employee }) {
     <div className="p-6 bg-white shadow-sm rounded-xl">
       <div className="flex flex-col items-center mb-4">
         <img
-          src={employee.image || "/public/images/NotFoundImage.jpg"}
+          src={employee.image || "/src/assets/images/NotFoundImage.jpg"}
           alt="Image User"
           className="mb-4 rounded-full w-28 h-28 sm:w-28 sm:h-28"
         />

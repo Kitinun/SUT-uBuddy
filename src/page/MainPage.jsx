@@ -4,7 +4,7 @@ import axios from "axios";
 import EmployeeCard from "../components/EmployeeCard";
 import EmployeeForm from "../components/EmployeeForm";
 import InitialSearchState from "../components/InitialSearchState";
-import NotFoundUser from "../components/NotFoundUser";
+import NotFoundUser from "../components/Layout/NotFoundUser";
 import Loading from "../components/Layout/Loading";
 
 function MainPage() {
