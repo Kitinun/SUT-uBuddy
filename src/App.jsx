@@ -5,7 +5,7 @@ import Navbar from "./components/Layout/Navbar";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.VITE_BASE_PATH}>
       <Routes>
         {/* เพิ่ม redirect จาก root path ไปที่ login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
